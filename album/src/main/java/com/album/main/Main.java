@@ -35,6 +35,8 @@ import com.album.utils.PropertyUtil;
  * 完整示例：
  * 图片格式：20181014_214599_表白_今天我像女朋友表白啦，而且成功啦~开心
  * 若原始图片较少，或图片名称无规律，则需手动进行图片格式化，无需本次执行
+ * 手写模版：
+ * 2018_999999_0_0
  * 否则，则依原始图片名称规则的不同分别设计格式化方法，完成图片名称的格式化。此时需设定格式化规则local.format，本次上传图片的主题(formatImgName参数)，描述默认为0
  * 
  * 程序第2次执行(执行该步前需保证local.sourceDir中图片的名称已完成格式化，并设置local.type)
@@ -50,6 +52,7 @@ import com.album.utils.PropertyUtil;
  * local.minPhotoDir --> aliyun.minPhotoDir
  * local.photoDir --> aliyun.photoDir
  * 
+ * 程序第4次执行(若需要删除图片，则在阿里云上删除后，直接运行本步生成新的json文件)
  * 5.生成博客所需json文件
  */
 public class Main {
@@ -127,13 +130,15 @@ public class Main {
     public static void main(String[] args) throws IOException {
         switch (Integer.parseInt(PropertyUtil.get("local.type"))) {
         case 0:
-            Main.formatImgName("IDO漫展");
+            Main.formatImgName("0");
             break;
         case 1:
             Main.copyAndFormatImg();
             break;
         case 2:
             Main.upload();
+            break;
+        case 3:
             Main.createJson();
             break;
         }
