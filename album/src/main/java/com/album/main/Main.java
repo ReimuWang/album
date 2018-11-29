@@ -90,14 +90,17 @@ public class Main {
         for(File sourceFile : sourceDir.listFiles()) {
             BufferedImage sourceImg = ImageIO.read(sourceFile);
             BufferedImage squareImg = ImgUtils.toSquare(sourceImg);
+            int rotate = 0;
             // photo
             float photoQuality = Float.parseFloat(PropertyUtil.get("local.photoQuality"));
             Thumbnails.of(squareImg).scale(1f)
+                                    .rotate(rotate)
                                     .outputQuality(photoQuality)
                                     .toFile(PropertyUtil.get("local.photoDir") + sourceFile.getName());
             // minPhoto
             int minWidth = Integer.parseInt(PropertyUtil.get("local.minPhotoWidth"));
             Thumbnails.of(squareImg).size(minWidth, minWidth)
+                                    .rotate(rotate)
                                     .toFile(PropertyUtil.get("local.minPhotoDir") + sourceFile.getName());
             System.out.println(sourceFile.getName());
         }

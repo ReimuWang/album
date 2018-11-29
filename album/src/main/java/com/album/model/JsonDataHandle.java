@@ -2,8 +2,9 @@ package com.album.model;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.album.utils.PropertyUtil;
 import com.alibaba.fastjson.JSONArray;
@@ -11,7 +12,16 @@ import com.alibaba.fastjson.JSONObject;
 
 public class JsonDataHandle {
 
-    private Map<String, JSONObject> map = new HashMap<String, JSONObject>();
+    private Map<String, JSONObject> map = null;
+
+    public JsonDataHandle() {
+        this.map = new TreeMap<String, JSONObject>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o2.compareTo(o1);
+            }
+        });
+    }
 
     public void add(String name) {
         // 解析原始名称
