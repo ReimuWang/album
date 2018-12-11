@@ -47,7 +47,7 @@ import com.album.utils.PropertyUtil;
  * 执行后，确认一下对图片质量是否满意，若不满意，则调整local.photoQuality后重新进行
  * 
  * 程序第3次执行(本次执行前需保证local.photoDir,local.minPhotoDir中已有待上传的图片，且这些图片当前均未在阿里云中)
- * 若需上传的数据为视频，则无需执行前3步，直接从本步开始执行。此时需手动为视频准备一张缩略图并存入local.minPhotoDir
+ * 若需上传的数据为视频，则无需执行前3步，直接从本步开始执行。此时需手动为视频准备一张缩略图并存入local.minPhotoDir(该缩略图需为jpg格式)
  * 4.完成图片上传：
  * local.minPhotoDir --> aliyun.minPhotoDir
  * local.photoDir --> aliyun.photoDir
@@ -123,7 +123,7 @@ public class Main {
     }
 
     private static void createJson() throws IOException {
-        List<String> nameList = AliyunUtis.listObjects(PropertyUtil.get("aliyun.minPhotoDir"));
+        List<String> nameList = AliyunUtis.listObjects(PropertyUtil.get("aliyun.photoDir"));
         JsonDataHandle jsonDataHandle = new JsonDataHandle();
         for (String name : nameList) jsonDataHandle.add(name);
         jsonDataHandle.createJson();

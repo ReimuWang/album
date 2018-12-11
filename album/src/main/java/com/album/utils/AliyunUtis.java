@@ -93,22 +93,26 @@ public class AliyunUtis {
     public static List<String> listObjects(String prefix) {
         if (org.apache.commons.lang.StringUtils.isBlank(prefix)) return null;
         OSSClient ossClient = null;
-        List<String> result = null;
+        final int maxKeys = 200;
+        String nextMarker = null;
+        ObjectListing objectListing = null;
         try {
+            List<String> result = new ArrayList<String>();
             ossClient = AliyunUtis.getClient();
-            ListObjectsRequest listObjectsRequest = new ListObjectsRequest(PropertyUtil.get("aliyun.bucketName"));
-            listObjectsRequest.setPrefix(prefix);
-            // 递归列出prefix下的所有文件
-            ObjectListing listing = ossClient.listObjects(listObjectsRequest);
-            result = new ArrayList<String>(listing.getObjectSummaries().size());
-            // 遍历所有文件
             String separator = "/";
-            for (OSSObjectSummary objectSummary : listing.getObjectSummaries()) {
-                String name = objectSummary.getKey();
-                if (name.endsWith(separator)) continue;
-                String[] array = name.split(separator);
-                result.add(array[array.length - 1]);
-            }
+            do {
+                objectListing = ossClient.listObjects(new ListObjectsRequest(PropertyUtil.get("aliyun.bucketName"))
+                                         .withPrefix(prefix)
+                                         .withMarker(nextMarker)
+                                         .withMaxKeys(maxKeys));
+                List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+                for (OSSObjectSummary objectSummary : sums) {
+                    String name = objectSummary.getKey();
+                    if (name.endsWith(separator)) continue;
+                    String[] array = name.split(separator);
+                    result.add(array[array.length - 1]);
+                }
+            } while (objectListing.isTruncated());
             return result;
         } finally {
             AliyunUtis.closeClient(ossClient);
